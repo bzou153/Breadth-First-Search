@@ -7,3 +7,7 @@ endCol = 18;
 endRow = 1;
 % Perform the BFS algorithm function
 MoveCount = BFS(startCol, startRow, endCol, endRow, map);
+%f = @() BFS(startCol, startRow, endCol, endRow, map);
+%t = timeit(f);
+%disp("Time: ");
+%disp(t)

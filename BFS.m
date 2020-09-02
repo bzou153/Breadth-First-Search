@@ -5,6 +5,7 @@ function MoveCount = BFS(sc, sr, endCol, endRow, map)
     R = Mapsize(1);
     C = Mapsize(2);
     searchpath = zeros(100,2);
+    path = [];
     rq = {}; % empty queues for rows and cols
     cq = {};
     %variables used to track the number of steps
@@ -29,10 +30,7 @@ function MoveCount = BFS(sc, sr, endCol, endRow, map)
         [r,rq] = dequeue(rq);
         [c,cq] = dequeue(cq);
         % Check if reached the end
-        if (r == endRow) && (c == endCol)
-            reached_end = true;
-            break
-        end
+        
         
         %explore_neighbours(r,c,R,C,visited,map);
         for i = 1:4    
@@ -60,7 +58,13 @@ function MoveCount = BFS(sc, sr, endCol, endRow, map)
             visited(rr,cc) = true;
             nodes_in_next_layer = nodes_in_next_layer + 1;
             j = j + 1;
+            if (rr == endRow) && (cc == endCol)
+                reached_end = true;
+                rq = [];
+                break
+            end
         end
+           
         nodes_left_in_layer = nodes_left_in_layer - 1;
         if nodes_left_in_layer == 0
             nodes_left_in_layer = nodes_in_next_layer;
@@ -68,7 +72,24 @@ function MoveCount = BFS(sc, sr, endCol, endRow, map)
             move_count = move_count + 1;
         end
     end
+    
+    % reconstruct the path
+    pathsize = size(searchpath);
+    steps = pathsize(1) - 1;
+    tempRow = searchpath(steps + 1,1);
+    tempCol = searchpath(steps + 1,2);
+    for i = steps:-1:1
+        prevRow = searchpath(i,1);
+        prevCol = searchpath(i,2);
+        Neighbour1 = isNeighbours(prevRow,prevCol,tempRow,tempCol);
+        if Neighbour1 == 1
+            path(end + 1, 1) = prevRow;
+            path(end , 2) = prevCol;
+            tempRow = prevRow;
+            tempCol = prevCol;
+        end
+    end
     % return MoveCount and Plot searching path
     MoveCount = move_count;
-    plotmap(map, searchpath);
+    plotmap(map, path);
 end
